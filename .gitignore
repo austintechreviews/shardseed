@@ -1,0 +1,17 @@
+node_modules/
+dist/
+apps/desktop/dist/
+target/
+**/target/
+**/release/bundle/
+*.dmg
+*.app.tar.gz
+*.AppImage
+*.deb
+*.rpm
+*.msi
+*.exe
+apps/desktop/src-tauri/gen/
+.DS_Store
+.shardseed-data/
+*.log

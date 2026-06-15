@@ -1,0 +1,16 @@
+[workspace]
+resolver = "2"
+members = [
+  "apps/desktop/src-tauri",
+  "crates/shardseed-core",
+  "crates/shardseed-crypto",
+  "crates/shardseed-manifest",
+  "crates/shardseed-inspect",
+  "crates/shardseed-publish",
+  "crates/shardseed-storage",
+  "crates/shardseed-catalogue",
+]
+
+[workspace.package]
+edition = "2021"
+license = "Apache-2.0"

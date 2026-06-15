@@ -1,0 +1,1 @@
+//! Rust catalogue crate placeholder.

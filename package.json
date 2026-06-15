@@ -1,0 +1,45 @@
+{
+  "name": "shardseed",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && npm run build:desktop",
+    "build:desktop": "npm run desktop:frontend:build",
+    "desktop:frontend:build": "vite build --config apps/desktop/vite.config.ts",
+    "desktop:frontend:dev": "vite --host 127.0.0.1 --port 1420 --config apps/desktop/vite.config.ts",
+    "desktop:dev": "tauri dev --config apps/desktop/src-tauri/tauri.conf.json",
+    "desktop:build": "tauri build --config apps/desktop/src-tauri/tauri.conf.json",
+    "dev": "npm run desktop:dev",
+    "native:linux": "npm run desktop:build",
+    "native:macos": "npm run desktop:build",
+    "native:windows": "npm run desktop:build",
+    "test": "vitest run",
+    "test:e2e": "vitest run tests/publish-download-verify.test.ts tests/torrent-resume.test.ts tests/mesh.test.ts",
+    "shardseed": "tsx src/cli/main.ts"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "2.8.0",
+    "@vitejs/plugin-react": "^6.0.2",
+    "bittorrent-tracker": "^11.2.3",
+    "commander": "14.0.2",
+    "create-torrent": "^6.1.2",
+    "fast-glob": "3.3.3",
+    "lucide-react": "^0.562.0",
+    "mime-types": "3.0.2",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "tsx": "^4.22.4",
+    "vite": "^8.0.16",
+    "webtorrent": "^3.0.16"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.8.0",
+    "@types/mime-types": "3.0.1",
+    "@types/node": "24.10.2",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "typescript": "5.9.3",
+    "vitest": "^4.1.8"
+  }
+}
