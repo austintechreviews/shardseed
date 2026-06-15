@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { afterEach, describe, expect, it } from "vitest";
 import { sha256File } from "../src/fsutil.js";
-import { LocalTracker, parseTorrentInfo, startLocalTracker, WebTorrentEngine } from "../src/torrent/engine.js";
+import { LocalTracker, normalizeTorrentPath, parseTorrentInfo, startLocalTracker, WebTorrentEngine } from "../src/torrent/engine.js";
 import { readTorrentJobStore, runDownloadJob } from "../src/torrent/jobs.js";
 
 const engines: WebTorrentEngine[] = [];
@@ -15,6 +15,11 @@ afterEach(async () => {
 });
 
 describe("torrent resume and persisted jobs", () => {
+  it("normalizes torrent library paths to manifest-safe separators", () => {
+    expect(normalizeTorrentPath("release\\README.md")).toBe("release/README.md");
+    expect(normalizeTorrentPath("release\\nested\\weights.gguf")).toBe("release/nested/weights.gguf");
+  });
+
   it("parses generated torrent files with file, length, announce, and info hash metadata", async () => {
     const root = await makeTemp("torrent-info");
     const seedDir = join(root, "seed", "release");

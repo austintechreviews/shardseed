@@ -74,6 +74,10 @@ export interface TorrentProgress {
   files: TorrentFileSummary[];
 }
 
+export function normalizeTorrentPath(path: string): string {
+  return path.replace(/\\/g, "/");
+}
+
 export interface TorrentEngine {
   create(inputPath: string, announceOrOptions?: string[] | TorrentCreateOptions): Promise<TorrentCreateResult>;
   seed(inputPath: string, torrentFile: Buffer, announceOrOptions?: string[] | TorrentSeedOptions): Promise<TorrentSession>;
@@ -254,8 +258,8 @@ export async function parseTorrentInfo(torrentFile: Buffer | Uint8Array | string
     length: parsed.length ?? 0,
     pieceLength: parsed.pieceLength ?? 0,
     files: (parsed.files ?? []).map((file: { path: string; name?: string; length: number }) => ({
-      path: file.path,
-      name: file.name ?? file.path.split("/").at(-1) ?? file.path,
+      path: normalizeTorrentPath(file.path),
+      name: file.name ?? normalizeTorrentPath(file.path).split("/").at(-1) ?? file.path,
       length: file.length
     })),
     announce: (parsed.announce ?? []) as string[],
@@ -265,10 +269,10 @@ export async function parseTorrentInfo(torrentFile: Buffer | Uint8Array | string
 
 function applyFileSelection(torrent: WebTorrentTorrent, selectedFiles?: string[]): void {
   if (!selectedFiles?.length) return;
-  const wanted = new Set(selectedFiles);
+  const wanted = new Set(selectedFiles.map(normalizeTorrentPath));
   let matched = 0;
   for (const file of torrent.files) {
-    if (wanted.has(file.path)) {
+    if (wanted.has(normalizeTorrentPath(file.path))) {
       file.select();
       matched++;
     } else {
@@ -276,14 +280,14 @@ function applyFileSelection(torrent: WebTorrentTorrent, selectedFiles?: string[]
     }
   }
   if (matched !== wanted.size) {
-    const available = torrent.files.map((file) => file.path).join(", ");
+    const available = torrent.files.map((file) => normalizeTorrentPath(file.path)).join(", ");
     throw new Error(`Selective download requested missing file(s). Available files: ${available}`);
   }
 }
 
 function summarizeFiles(torrent: WebTorrentTorrent): TorrentFileSummary[] {
   return torrent.files.map((file) => ({
-    path: file.path,
+    path: normalizeTorrentPath(file.path),
     name: file.name,
     length: file.length,
     downloaded: file.downloaded,
